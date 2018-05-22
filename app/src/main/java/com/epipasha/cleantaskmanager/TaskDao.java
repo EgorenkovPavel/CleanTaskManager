@@ -1,5 +1,7 @@
 package com.epipasha.cleantaskmanager;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
@@ -8,18 +10,22 @@ import android.arch.persistence.room.Update;
 
 import java.util.List;
 
+@Dao
 public interface TaskDao {
 
     @Query("SELECT * FROM task")
-    List<TaskEntry> loadAllTasks();
+    LiveData<List<TaskEntry>> loadAllTasks();
 
     @Insert
-    void insertTask();
+    void insertTask(TaskEntry task);
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
-    void updateTask();
+    void updateTask(TaskEntry task);
 
     @Delete
-    void deleteTask();
+    void deleteTask(TaskEntry task);
+
+    @Query("SELECT * FROM task WHERE id = :id")
+    LiveData<TaskEntry> loadTaskById(int id);
 
 }
