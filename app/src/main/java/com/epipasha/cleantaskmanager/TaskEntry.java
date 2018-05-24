@@ -44,4 +44,8 @@ public class TaskEntry {
     public Date getUpdateAt() {
         return updateAt;
     }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 }

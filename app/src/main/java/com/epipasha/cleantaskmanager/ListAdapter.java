@@ -14,6 +14,11 @@ import java.util.List;
 public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
     private List<TaskEntry> tasks;
+    private ItemClickListener mItemClickListener;
+
+    public ListAdapter(ItemClickListener itemClickListener) {
+        mItemClickListener = itemClickListener;
+    }
 
     @NonNull
     @Override
@@ -27,14 +32,14 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
         holder.tvDescription.setText(tasks.get(position).getDescription());
 
         SimpleDateFormat format = new SimpleDateFormat();
-        format.applyPattern("DD MM YYYY");
+        format.applyPattern("dd MM yyyy");
 
         holder.tvUpdateAt.setText(format.format(tasks.get(position).getUpdateAt()));
     }
 
     @Override
     public int getItemCount() {
-        return tasks.size();
+        return tasks == null ? 0 : tasks.size();
     }
 
     public void setTasks(List<TaskEntry> tasks){
@@ -42,7 +47,11 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
         notifyDataSetChanged();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder{
+    public interface ItemClickListener {
+        void onItemClickListener(int itemId);
+    }
+
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView tvDescription;
         TextView tvUpdateAt;
@@ -52,6 +61,14 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
             tvDescription = itemView.findViewById(R.id.tvDescroption);
             tvUpdateAt = itemView.findViewById(R.id.tvUpdateAt);
+
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            int elementId = tasks.get(getAdapterPosition()).getId();
+            mItemClickListener.onItemClickListener(elementId);
         }
     }
 
